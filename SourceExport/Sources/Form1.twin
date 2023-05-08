@@ -1,0 +1,233 @@
+[ Description ("") ]
+[ FormDesignerId ("00FEBACD-BB0B-43C0-BD19-2C8DAA05A210") ]
+[ PredeclaredId ]
+Class Form1
+
+Private bOldIsPortrait As Boolean
+
+Private Type POINT
+    x As Long
+    y As Long
+End Type
+
+Private Const WM_SETTINGCHANGE = &H001A
+Private Const WM_DISPLAYCHANGE = &H007E
+Private Const WM_DESTROY = &H0002
+
+Private Enum ChangeDisplaySettingsFlags
+    CDS_UPDATEREGISTRY = &H00000001
+    CDS_TEST = &H00000002
+    CDS_FULLSCREEN = &H00000004
+    CDS_GLOBAL = &H00000008
+    CDS_SET_PRIMARY = &H00000010
+    CDS_VIDEOPARAMETERS = &H00000020
+    CDS_ENABLE_UNSAFE_MODES = &H00000100
+    CDS_DISABLE_UNSAFE_MODES = &H00000200
+    CDS_RESET = &H40000000
+    CDS_RESET_EX = &H20000000
+    CDS_NORESET = &H10000000
+End Enum
+
+Private Enum ChangeDisplaySettingsReturnCodes
+    DISP_CHANGE_SUCCESSFUL = 0
+    DISP_CHANGE_RESTART = 1
+    DISP_CHANGE_FAILED = -1
+    DISP_CHANGE_BADMODE = -2
+    DISP_CHANGE_NOTUPDATED = -3
+    DISP_CHANGE_BADFLAGS = -4
+    DISP_CHANGE_BADPARAM = -5
+    DISP_CHANGE_BADDUALVIEW = -6
+End Enum
+Public Enum EnumDispMode
+    ENUM_CURRENT_SETTINGS = (-1)
+    ENUM_REGISTRY_SETTINGS = (-2)
+End Enum
+
+Private DeclareWide PtrSafe Function EnumDisplaySettingsW Lib "user32" (ByVal lpszDeviceName As LongPtr, ByVal iModeNum As EnumDispMode, lpDevMode As DEVMODEW_FORDISP) As Long
+
+Private DeclareWide PtrSafe Function ChangeDisplaySettingsExW Lib "user32" (ByVal lpszDeviceName As LongPtr, lpDevMode As DEVMODEW_FORDISP, ByVal hwnd As LongPtr, ByVal dwFlags As ChangeDisplaySettingsFlags, lParam As Any) As ChangeDisplaySettingsReturnCodes
+Private Declare PtrSafe Function DefSubclassProc Lib "comctl32.dll" Alias "#413" (ByVal hWnd As LongPtr, ByVal uMsg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr) As LongPtr
+Private Declare PtrSafe Function SetWindowSubclass Lib "comctl32.dll" Alias "#410" (ByVal hWnd As LongPtr, ByVal pfnSubclass As LongPtr, ByVal uIdSubclass As LongPtr, Optional ByVal dwRefData As LongPtr) As Long
+Private Declare PtrSafe Function RemoveWindowSubclass Lib "comctl32.dll" Alias "#412" (ByVal hWnd As LongPtr, ByVal pfnSubclass As LongPtr, ByVal uIdSubclass As LongPtr) As Long
+
+Private Enum DevModeFields
+    DM_ORIENTATION = &H00000001
+    DM_PAPERSIZE = &H00000002
+    DM_PAPERLENGTH = &H00000004
+    DM_PAPERWIDTH = &H00000008
+    DM_SCALE = &H00000010
+    DM_POSITION = &H00000020
+    DM_NUP = &H00000040
+    DM_DISPLAYORIENTATION = &H00000080
+    DM_COPIES = &H00000100
+    DM_DEFAULTSOURCE = &H00000200
+    DM_PRINTQUALITY = &H00000400
+    DM_COLOR = &H00000800
+    DM_DUPLEX = &H00001000
+    DM_YRESOLUTION = &H00002000
+    DM_TTOPTION = &H00004000
+    DM_COLLATE = &H00008000&
+    DM_FORMNAME = &H00010000
+    DM_LOGPIXELS = &H00020000
+    DM_BITSPERPEL = &H00040000
+    DM_PELSWIDTH = &H00080000
+    DM_PELSHEIGHT = &H00100000
+    DM_DISPLAYFLAGS = &H00200000
+    DM_DISPLAYFREQUENCY = &H00400000
+    DM_ICMMETHOD = &H00800000
+    DM_ICMINTENT = &H01000000
+    DM_MEDIATYPE = &H02000000
+    DM_DITHERTYPE = &H04000000
+    DM_PANNINGWIDTH = &H08000000
+    DM_PANNINGHEIGHT = &H10000000
+    DM_DISPLAYFIXEDOUTPUT = &H20000000
+End Enum
+
+Private Enum DevModeDisplayOrientation
+    DMDO_0 = 0
+    DMDO_DEFAULT = DMDO_0
+    DMDO_90 = 1
+    DMDO_180 = 2
+    DMDO_270 = 3
+End Enum
+Private Enum DevModeICMMethods
+    DMICMMETHOD_NONE = 1 /* ICM disabled */
+    DMICMMETHOD_SYSTEM = 2 /* ICM handled by system */
+    DMICMMETHOD_DRIVER = 3 /* ICM handled by driver */
+    DMICMMETHOD_DEVICE = 4 /* ICM handled by device */
+    DMICMMETHOD_USER = 256 /* Device-specific methods start here */
+End Enum
+Private Enum DevModeICMIntents
+    DMICM_SATURATE = 1 /* Maximize color saturation */
+    DMICM_CONTRAST = 2 /* Maximize color contrast */
+    DMICM_COLORIMETRIC = 3 /* Use specific color metric */
+    DMICM_ABS_COLORIMETRIC = 4 /* Use specific color metric */
+    DMICM_USER = 256 /* Device-specific intents start here */
+End Enum
+Private Enum DevModePrintMediaTypes
+    DMMEDIA_STANDARD = 1 /* Standard paper */
+    DMMEDIA_TRANSPARENCY = 2 /* Transparency */
+    DMMEDIA_GLOSSY = 3 /* Glossy paper */
+    DMMEDIA_USER = 256 /* Device-specific media start here */
+End Enum
+Private Enum DevModePrintDitherTypes
+    DMDITHER_NONE = 1 /* No dithering */
+    DMDITHER_COARSE = 2 /* Dither with a coarse brush */
+    DMDITHER_FINE = 3 /* Dither with a fine brush */
+    DMDITHER_LINEART = 4 /* LineArt dithering */
+    DMDITHER_ERRORDIFFUSION = 5 /* LineArt dithering */
+    DMDITHER_RESERVED6 = 6 /* LineArt dithering */
+    DMDITHER_RESERVED7 = 7 /* LineArt dithering */
+    DMDITHER_RESERVED8 = 8 /* LineArt dithering */
+    DMDITHER_RESERVED9 = 9 /* LineArt dithering */
+    DMDITHER_GRAYSCALE = 10 /* Device does grayscaling */
+    DMDITHER_USER = 256 /* Device-specific dithers start here */
+End Enum
+Private Const CCHFORMNAME = 32
+Private Const CCHDEVICENAME = 32
+[ Description ("DM_SPECVERSION value for NT4 through (at the time of writing this) the most recent version, Win11") ]
+Private Const DM_SPECVERSION = &H0401
+[ Description ("A version of DEVMODEW that uses the Display struct in the fields union rather than a byte array or the printer version.") ]
+Private Type DEVMODEW_FORDISP
+    dmDeviceName(CCHDEVICENAME - 1) As Integer
+    dmSpecVersion As Integer
+    dmDriverVersion As Integer
+    dmSize As Integer
+    dmDriverExtra As Integer
+    dmFields As DevModeFields
+    'PrinterOrDisplayFields(0 To 15) As BYTE 'union {
+                                            '   ' printer only fields */
+                                            '   struct {
+                                            '     short dmOrientation;
+                                            '     short dmPaperSize;
+                                            '     short dmPaperLength;
+                                            '     short dmPaperWidth;
+                                            '     short dmScale;
+                                            '     short dmCopies;
+                                            '     short dmDefaultSource;
+                                            '     short dmPrintQuality;
+                                            '   } DUMMYSTRUCTNAME;
+                                            '   ' display only fields */
+                                            '   struct {
+    dmPosition As POINT                     '     POINTL dmPosition;
+    dmDisplayOrientation As DevModeDisplayOrientation '    DWORD  dmDisplayOrientation;
+    dmDisplayFixedOutput As Long            '     DWORD  dmDisplayFixedOutput;
+                                            '   } DUMMYSTRUCTNAME2;
+                                            ' } DUMMYUNIONNAME;
+    dmColor As Integer
+    dmDuplex As Integer
+    dmYResolution As Integer
+    dmTTOption As Integer
+    dmCollate As Integer
+    dmFormName(CCHFORMNAME - 1) As Integer
+    dmLogPixels As Integer
+    dmBitsPerPel As Long
+    dmPelsWidth As Long
+    dmPelsHeight As Long
+    DisplayFlagsOrNup As Long   ' union {
+                                '     DWORD  dmDisplayFlags;
+                                '     DWORD  dmNup;
+                                ' } DUMMYUNIONNAME2;
+    dmDisplayFrequency As Long
+    '#if(WINVER >= 0x0400)
+    dmICMMethod As DevModeICMMethods
+    dmICMIntent As DevModeICMIntents
+    dmMediaType As DevModePrintMediaTypes
+    dmDitherType As DevModePrintDitherTypes
+    dmReserved1 As Long
+    dmReserved2 As Long
+    '#if (WINVER >= 0x0500) || (_WIN32_WINNT >= _WIN32_WINNT_NT4)
+    dmPanningWidth As Long
+    dmPanningHeight As Long
+    '#endif
+    '#endif /* WINVER >= 0x0400 */
+End Type
+
+Private Function Subclass2(hWnd As LongPtr, lpFN As LongPtr, Optional uId As LongPtr = 0&, Optional dwRefData As LongPtr = 0&) As Boolean
+If uId = 0 Then uId = hWnd
+    Subclass2 = SetWindowSubclass(hWnd, lpFN, uId, dwRefData):      Debug.Assert Subclass2
+End Function
+
+Private Function UnSubclass2(hWnd As LongPtr, ByVal lpFN As LongPtr, pid As LongPtr) As Boolean
+    UnSubclass2 = RemoveWindowSubclass(hWnd, lpFN, pid)
+End Function
+
+Private Function FormWndProc(ByVal hWnd As LongPtr, ByVal uMsg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr, ByVal uIdSubclass As LongPtr, ByVal dwRefData As LongPtr) As LongPtr
+
+Select Case uMsg
+    Case WM_SETTINGCHANGE, WM_DISPLAYCHANGE
+        Dim bPortrait As Boolean = IsPortraitMode()
+        If bPortrait <> bOldIsPortrait Then
+            List1.AddItem Format$(Now, "mm-dd Hh:nn:Ss") & ": RotationChange(Portrait=" & bPortrait & ")"
+        	bOldIsPortrait = bPortrait
+            
+            '************************************
+            'ORIENTATION HAS CHANGED!
+        End If
+    Case WM_DESTROY
+        Call UnSubclass2(hWnd, AddressOf FormWndProc, uIdSubclass)
+End Select
+FormWndProc = DefSubclassProc(hWnd, uMsg, wParam, lParam)
+End Function
+
+Private Function IsPortraitMode() As Boolean
+	Dim dm As DEVMODEW_FORDISP
+    dm.dmSize = LenB(dm)
+    Dim hr As Long = EnumDisplaySettingsW(0, ENUM_CURRENT_SETTINGS, dm)
+    List1.AddItem "EnumMode return=" & hr
+    Return (dm.dmDisplayOrientation <> DMDO_0) And (dm.dmDisplayOrientation <> DMDO_180)
+End Function
+
+Private Sub Form_Load() Handles Form.Load
+    bOldIsPortrait = IsPortraitMode()
+    List1.AddItem Format$(Now, "mm-dd Hh:nn:Ss") & ": Startup (Portrait=" & bOldIsPortrait & ")"
+    Subclass2 Form1.hWnd, AddressOf FormWndProc, Form1.hWnd
+End Sub
+
+Private Sub Command1_Click() Handles Command1.Click
+    List1.AddItem Format$(Now, "mm-dd Hh:nn:Ss") & ": Manual check, Portrait=" & IsPortraitMode()
+    
+End Sub
+
+
+End Class

@@ -1,0 +1,55 @@
+{
+	"configuration.inherits": "Defaults",
+	"project.appTitle": "RotationMon",
+	"project.buildPath": "${SourcePath}\\Build\\${ProjectName}_${Architecture}.${FileExtension}",
+	"project.buildType": "Standard EXE",
+	"project.description": "Rotation Monitoring Demo",
+	"project.exportPathIsV2": true,
+	"project.forceDpiAwarenessAtStartup": "SYSTEM_DPI_AWARE",
+	"project.id": "{2A6DDEB9-4558-40C3-9296-A8A59EF4C1D3}",
+	"project.licence": "MIT",
+	"project.name": "RotationMon",
+	"project.optionExplicit": true,
+	"project.references": [
+		{
+			"hasBeenSplit": true,
+			"id": "{F50B82D0-DCAB-43FE-9631-11959D4A4728}",
+			"isCompilerPackage": true,
+			"licence": "MIT",
+			"name": "[COMPILER PACKAGE] WinNativeForms Package",
+			"path32": "/Packages/WindowsControlsPackage",
+			"path64": "/Packages/WindowsControlsPackage",
+			"publishedDate": "09-FEB-2022",
+			"publishedTime": "15:48:54",
+			"publisher": "TWINBASIC-COMPILER",
+			"symbolId": "WindowsControlsPackage",
+			"versionBuild": 0,
+			"versionMajor": 0,
+			"versionMinor": 0,
+			"versionRevision": 31
+		},
+		{
+			"id": "{00020430-0000-0000-C000-000000000046}",
+			"lcid": 0,
+			"name": "OLE Automation",
+			"path32": "C:\\Windows\\SysWow64\\stdole2.tlb",
+			"path64": "C:\\Windows\\System32\\stdole2.tlb",
+			"versionMajor": 2,
+			"versionMinor": 0
+		}
+	],
+	"project.settingsVersion": 1,
+	"project.startupObject": "Form1",
+	"project.versionBuild": 1,
+	"project.versionMajor": 1,
+	"project.versionMinor": 0,
+	"project.versionProductName": "RotationMon",
+	"project.warnings": {
+		"errors": [
+			"TB0003",
+			"TB0002"
+		],
+		"ignored": []
+	},
+	"runtime.useUnicodeStandardLibrary": true
+}
