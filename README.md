@@ -33,5 +33,6 @@ End Select
 FormWndProc = DefSubclassProc(hWnd, uMsg, wParam, lParam)
 End Function
 ```
+For the first function, we use a little trick to make things easier: We don't care about Printers, nor does the `EnumDisplaySettings` API, so rather than the traditional byte array to cover both for the unsupported (for now) union, I substituted the display properties so we don't need to worry about copying 4 bytes from a memory offset. Be mindful of this if you ever reuse the DEVMODE definition from this module.
 
-No dependencies, and no particular requirements, should build on any remotely recent tB version.
+No dependencies, and no particular requirements, should build on any remotely recent tB version. A few syntax changes and splitting the subclassing into a .bas or using a self-sub thunk is all that's needed to modify this to work in VB6.
